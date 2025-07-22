@@ -1,0 +1,31 @@
+stages:
+  - format
+  - validate
+  - plan
+  - apply
+
+format:
+  stage: format
+  script:
+    - cd terraform
+    - terraform fmt -check
+
+validate:
+  stage: validate
+  script:
+    - cd terraform
+    - terraform validate
+
+plan:
+  stage: plan
+  script:
+    - cd terraform
+    - terraform plan
+
+apply:
+  stage: apply
+  only:
+    - main
+  script:
+    - cd terraform
+    - terraform apply -auto-approve
