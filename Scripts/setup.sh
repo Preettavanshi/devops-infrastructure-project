@@ -1,29 +1,44 @@
 #!/bin/bash
 
-# Install necessary tools (Terraform, AWS CLI, Docker)
-echo "Installing Terraform, AWS CLI, and Docker..."
+set -e  # exit on error
 
-# For Ubuntu/Debian, as an example
-sudo apt-get update -y
-sudo apt-get install -y unzip curl
+echo "🔧 Starting setup of local DevOps environment..."
 
-# Install Terraform
-curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
-unzip terraform.zip
-sudo mv terraform /usr/local/bin/
-rm terraform.zip
+# --- Install Terraform ---
+if ! command -v terraform &> /dev/null; then
+  echo "📦 Installing Terraform..."
+  curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+  unzip terraform.zip
+  sudo mv terraform /usr/local/bin/
+  rm terraform.zip
+else
+  echo "✅ Terraform is already installed"
+fi
 
-# Install AWS CLI (v2)
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-rm -rf awscliv2.zip aws/
+# --- Install AWS CLI ---
+if ! command -v aws &> /dev/null; then
+  echo "📦 Installing AWS CLI..."
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  rm -rf awscliv2.zip aws/
+else
+  echo "✅ AWS CLI is already installed"
+fi
 
-# Install Docker
-sudo apt-get install -y docker.io
+# --- Install Docker ---
+if ! command -v docker &> /dev/null; then
+  echo "📦 Installing Docker..."
+  sudo apt-get update
+  sudo apt-get install -y docker.io
+else
+  echo "✅ Docker is already installed"
+fi
 
-# Initialize Terraform
-cd terraform
+# --- Terraform Initialization ---
+cd "$(dirname "$0")/../terraform"
+echo "📂 Switching to Terraform directory: $(pwd)"
 terraform init
 
-echo "Setup complete. Please configure your AWS credentials if not already set."
+echo "✅ Setup complete! You're ready to deploy infrastructure."
+
