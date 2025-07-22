@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# Set variables
-DB_INSTANCE_IDENTIFIER="your-db-identifier"
-BACKUP_NAME="manual-backup-$(date +%F-%H-%M-%S)"
+set -e
 
-echo "Starting RDS manual snapshot: $BACKUP_NAME"
+DB_INSTANCE="octabyte-db"
+SNAPSHOT_LABEL="manual-backup-$(date +%F-%H-%M-%S)"
 
+echo "📦 Starting snapshot for RDS instance '$DB_INSTANCE'..."
 aws rds create-db-snapshot \
-    --db-instance-identifier "$DB_INSTANCE_IDENTIFIER" \
-    --db-snapshot-identifier "$BACKUP_NAME"
+    --db-instance-identifier "$DB_INSTANCE" \
+    --db-snapshot-identifier "$SNAPSHOT_LABEL"
 
-echo "Backup initiated. Check AWS RDS console for progress."
+echo "✅ Snapshot '$SNAPSHOT_LABEL' initiated. Monitor status in AWS Console."
+
